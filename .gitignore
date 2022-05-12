@@ -1,0 +1,11 @@
+node_modules
+/build
+*.local
+tsconfig.tsbuildinfo
+yarn-error.log
+/src/__tests__/coverage
+
+# UCPEM
+ucpem_ports
+
+/.vscode
