@@ -43,7 +43,7 @@ export class RouterParentFacadeImpl implements VirtualNetworkInternals.NetworkPa
         if (peer) {
             const connections = new Set(joinIterable(this.connections.client.tryFindAll(id) ?? [], this.connections.server.tryFindAll(id) ?? []))
             for (const connection of connections) {
-                this.connections.unregister(connection)
+                this.closeConnection(id, connection.id, "peer disconnected")
             }
 
             this.peers.unregister(peer)
