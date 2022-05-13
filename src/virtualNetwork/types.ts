@@ -1,5 +1,7 @@
 
 export class PeerNotFoundError extends Error {
+    private _isClientError = true
+
     constructor(peer: string) {
         super(`Peer with id "${peer}" was not found`)
         this.name = "PeerNotFoundError"
@@ -7,6 +9,8 @@ export class PeerNotFoundError extends Error {
 }
 
 export class ConnectionRejectedError extends Error {
+    private _isClientError = true
+
     constructor(peer: string) {
         super(`Connection to peer "${peer}" was rejected`)
         this.name = "ConnectionRejectedError"
@@ -14,6 +18,8 @@ export class ConnectionRejectedError extends Error {
 }
 
 export class AccessDeniedError extends Error {
+    private _isClientError = true
+
     constructor(peer: string) {
         super(`Tried to perform operation on behalf of peer "${peer}", who is not registered`)
         this.name = "AccessDeniedError"
@@ -21,6 +27,8 @@ export class AccessDeniedError extends Error {
 }
 
 export class InvalidConnectionError extends Error {
+    private _isClientError = true
+
     constructor(connection: string) {
         super(`Tried to send a packet through a connection "${connection}", but such connection does not exist`)
         this.name = "InvalidConnectionError"
