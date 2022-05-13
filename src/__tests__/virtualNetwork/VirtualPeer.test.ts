@@ -59,7 +59,7 @@ describe("VirtualPeer", () => {
 
         server.enableHost()
         server.onConnection.add(null, (serverConnection) => {
-            serverConnection.onPacket.add(null, (data) => {
+            serverConnection.onMessage.add(null, (data) => {
                 receive1 = data
                 serverConnection.send(data2)
             })
@@ -67,7 +67,7 @@ describe("VirtualPeer", () => {
         })
 
         const clientConnection = await client.connect(server.id)
-        clientConnection.onPacket.add(null, (data) => {
+        clientConnection.onMessage.add(null, (data) => {
             receive2 = data
         })
 

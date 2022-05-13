@@ -33,7 +33,7 @@ class PeerChildFacadeImpl implements VirtualNetworkInternals.NetworkChildFacade 
         const connection = this.owner["connections"].get(packet.connection)
         if (!connection) return
 
-        connection.onPacket.emit(packet.data)
+        connection.onMessage.emit(packet.data)
     }
 }
 
@@ -85,7 +85,7 @@ export class VirtualPeer extends Disposable {
 
 export namespace VirtualPeer {
     export class Connection extends ClientEventListener {
-        public readonly onPacket = new EventEmitter<any>()
+        public readonly onMessage = new EventEmitter<any>()
         public readonly onEnd = new EventEmitter<{ reason: string }>()
 
         public [DISPOSE]() {
