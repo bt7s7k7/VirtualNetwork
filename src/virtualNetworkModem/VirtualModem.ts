@@ -1,4 +1,4 @@
-import { MessageBridge } from "../dependencyInjection/commonServices/MessageBridge"
+import { MessageBridge, MessageBridgeDisposedError } from "../dependencyInjection/commonServices/MessageBridge"
 import { DIContext } from "../dependencyInjection/DIContext"
 import { DISPOSE } from "../eventLib/Disposable"
 import { EventListener } from "../eventLib/EventListener"
@@ -32,11 +32,11 @@ class ModemChildFacade implements VirtualNetworkInternals.NetworkChildFacade {
     }
 
     public async receivePacket(packet: VirtualNetworkInternals.Packet): Promise<void> {
-        return this.sendRequest("virtualNetwork:client:receivePacket", packet)
+        return this.sendRequest("virtualNetwork:client:receivePacket", packet).catch(ignoreMessageBridgeDisposedError)
     }
 
     public async closeConnection(targetID: string, connection: string, reason: string): Promise<void> {
-        return this.sendRequest("virtualNetwork:client:closeConnection", { targetID, connection, reason })
+        return this.sendRequest("virtualNetwork:client:closeConnection", { targetID, connection, reason }).catch(ignoreMessageBridgeDisposedError)
     }
 
     protected sendRequest<T extends keyof ClientMessages>(request: T, data: Parameters<ClientMessages[T]>[0]) {
@@ -130,6 +130,14 @@ export class VirtualModemServer extends EventListener {
     }
 }
 
+function ignoreMessageBridgeDisposedError(err: any) {
+    if (err instanceof MessageBridgeDisposedError) {
+        return
+    }
+
+    throw err
+}
+
 class ModemParentFacade implements VirtualNetworkInternals.NetworkParentFacade {
     public owner: VirtualModemClient = null!
 
@@ -157,19 +165,16 @@ class ModemParentFacade implements VirtualNetworkInternals.NetworkParentFacade {
     }
 
     public sendPacket(packet: VirtualNetworkInternals.Packet): Promise<void> {
-        return this.sendRequest("virtualNetwork:server:sendPacket", packet)
+        return this.sendRequest("virtualNetwork:server:sendPacket", packet).catch(ignoreMessageBridgeDisposedError)
     }
 
     public disconnect(delegate: VirtualNetworkInternals.NetworkChildFacade): void {
-        this.sendRequest("virtualNetwork:server:disconnect", [...this.owner["peers"].values()].map(v => v.id))
+        this.sendRequest("virtualNetwork:server:disconnect", [...this.owner["peers"].values()].map(v => v.id)).catch(ignoreMessageBridgeDisposedError)
     }
 
     protected sendRequest<T extends keyof ServerMessages>(request: T, data: Parameters<ServerMessages[T]>[0]) {
         return this.owner.messageBridge.sendRequest(request, data) as Promise<ReturnType<ServerMessages[T]>>
     }
-
-    constructor(
-    ) { }
 }
 
 export class VirtualModemClient extends VirtualRouter {

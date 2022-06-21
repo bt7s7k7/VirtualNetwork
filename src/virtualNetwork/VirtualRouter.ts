@@ -147,7 +147,8 @@ export class RouterParentFacadeImpl implements VirtualNetworkInternals.NetworkPa
     }
 
     public disconnect(delegate: VirtualNetworkInternals.NetworkChildFacade) {
-        const peers = this.peers.facade.findAll(delegate)
+        const peers = this.peers.facade.tryFindAll(delegate)
+        if (!peers) return
         for (const peer of peers) {
             this.removePeer(peer.id)
         }
