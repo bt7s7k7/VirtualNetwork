@@ -12,6 +12,7 @@ interface PeerHandle {
 
 const PeersRegistry = Registry.define<PeerHandle>()
     .addKeyShared("facade")
+    .addKeyShared("name")
     .addKey("id")
     .build()
 
@@ -76,6 +77,19 @@ export class RouterParentFacadeImpl implements VirtualNetworkInternals.NetworkPa
             return this.owner["parent"].openConnection(clientID, serverID)
         } else {
             throw new PeerNotFoundError(serverID)
+        }
+    }
+
+    public async findPeersByName(name: string) {
+        if (this.owner["parent"]) {
+            return this.owner["parent"].findPeersByName(name)
+        }
+
+        const target = this.peers.name.tryFindAll(name)
+        if (target) {
+            return [...target].map(v => v.id)
+        } else {
+            return []
         }
     }
 

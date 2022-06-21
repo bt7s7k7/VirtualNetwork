@@ -66,6 +66,7 @@ export namespace VirtualNetworkInternals {
         openConnection(clientID: string, serverID: string): Promise<Connection>
         closeConnection(sourceID: string, connectionID: string, reason: string): Promise<void>
         getPeers(): Promise<PeerInfo[]>
+        findPeersByName(name: string): Promise<string[]>
         sendPacket(packet: Packet): Promise<void>
         disconnect(delegate: NetworkChildFacade): void
     }

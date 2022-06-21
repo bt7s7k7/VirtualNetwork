@@ -65,6 +65,10 @@ export class VirtualPeer extends Disposable {
         return this.parent.getPeers()
     }
 
+    public findPeersByName(name: string) {
+        return this.parent.findPeersByName(name)
+    }
+
     protected constructor(
         public readonly id: string,
         public readonly name: string,

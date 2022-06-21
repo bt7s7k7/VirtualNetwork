@@ -17,6 +17,7 @@ interface ServerMessages {
     "virtualNetwork:server:openConnection"(options: { clientID: string, serverID: string }): VirtualNetworkInternals.Connection
     "virtualNetwork:server:closeConnection"(options: { sourceID: string, connectionID: string, reason: string }): void
     "virtualNetwork:server:getPeers"(): VirtualNetworkInternals.PeerInfo[]
+    "virtualNetwork:server:findPeersByName"(name: string): string[]
     "virtualNetwork:server:sendPacket"(packet: VirtualNetworkInternals.Packet): void
     "virtualNetwork:server:disconnect"(peers: string[]): void
 }
@@ -105,6 +106,9 @@ export class VirtualModemServer extends EventListener {
             "virtualNetwork:server:getPeers": async () => {
                 return await this.parent.getPeers()
             },
+            "virtualNetwork:server:findPeersByName": async (name) => {
+                return this.parent.findPeersByName(name)
+            },
             "virtualNetwork:server:sendPacket": async (packet) => {
                 if (!(typeof packet == "object" && packet != null)) invalidPayload()
                 if (!(typeof packet.connection == "string")) invalidPayload()
@@ -147,6 +151,9 @@ class ModemParentFacade implements VirtualNetworkInternals.NetworkParentFacade {
 
     public getPeers(): Promise<VirtualNetworkInternals.PeerInfo[]> {
         return this.sendRequest("virtualNetwork:server:getPeers", undefined)
+    }
+    public findPeersByName(name: string): Promise<string[]> {
+        return this.sendRequest("virtualNetwork:server:findPeersByName", name)
     }
 
     public sendPacket(packet: VirtualNetworkInternals.Packet): Promise<void> {
