@@ -96,7 +96,7 @@ export namespace VirtualPeer {
             this.end("connection disposed")
         }
 
-        public end(reason: string) {
+        public end(reason = "connection terminated") {
             this.owner["parent"].closeConnection(this.owner.id, this.id, reason)
             super[DISPOSE]()
         }
