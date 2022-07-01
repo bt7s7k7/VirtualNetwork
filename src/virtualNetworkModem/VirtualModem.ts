@@ -1,4 +1,4 @@
-import { MessageBridge, MessageBridgeDisposedError } from "../dependencyInjection/commonServices/MessageBridge"
+import { MessageBridge } from "../dependencyInjection/commonServices/MessageBridge"
 import { DIContext } from "../dependencyInjection/DIContext"
 import { DISPOSE } from "../eventLib/Disposable"
 import { EventListener } from "../eventLib/EventListener"
@@ -131,11 +131,11 @@ export class VirtualModemServer extends EventListener {
 }
 
 function ignoreMessageBridgeDisposedError(err: any) {
-    if (err instanceof MessageBridgeDisposedError) {
-        return
-    }
+    //if (err instanceof MessageBridgeDisposedError) {
+    return
+    //}
 
-    throw err
+    //throw err
 }
 
 class ModemParentFacade implements VirtualNetworkInternals.NetworkParentFacade {
